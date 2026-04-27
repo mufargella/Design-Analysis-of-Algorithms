@@ -8,25 +8,25 @@ All numbers below are *medians* over 1000 runs.
 
 | Algorithm | Median time (μs) | Edge relaxations | PQ extractions |
 |---|---:|---:|---:|
-| Dijkstra (array) | 31.99 | 28 | 19 |
-| Dijkstra (binary heap) | 12.17 | 28 | 19 |
-| Dijkstra (transport) | 10.41 | 28 | 19 |
-| Bellman-Ford | 14.58 | 224 | n/a |
+| Dijkstra (array) | 26.90 | 28 | 19 |
+| Dijkstra (binary heap) | 10.60 | 28 | 19 |
+| Dijkstra (transport) | 19.20 | 28 | 19 |
+| Bellman-Ford | 17.50 | 224 | n/a |
 
 ## 2) Point-to-Point: source = 13 (New Admin. Capital), target = 7 (6th October)
 
 | Algorithm | Median time (μs) | Edge relaxations | PQ extractions |
 |---|---:|---:|---:|
-| Dijkstra (binary heap, full SSSP) | 9.56 | 28 | 19 |
-| Dijkstra (transport, early exit) | 12.90 | 25 | 17 |
-| A* (haversine heuristic) | 29.57 | 33 | 11 |
+| Dijkstra (binary heap, full SSSP) | 8.00 | 28 | 19 |
+| Dijkstra (transport, early exit) | 8.10 | 25 | 17 |
+| A* (haversine heuristic) | 7.80 | 33 | 11 |
 
 ## 3) All-Pairs Shortest Paths
 
 | Algorithm | Median time (μs) | Operations |
 |---|---:|---:|
-| Dijkstra-heap × V | 213.20 | 532 relax, 367 pops |
-| Floyd-Warshall | 39.42 | 7450 updates |
+| Dijkstra-heap × V | 107.90 | 532 relax, 367 pops |
+| Floyd-Warshall | 30.90 | 7450 updates |
 
 ## 4) Effect of Weight Function on Optimal Route (3 → 13)
 
