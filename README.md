@@ -1,36 +1,59 @@
-# CSE112 — Theoretical Algorithms Analysis Project
+# 🚦 Cairo Transportation Optimizer
 
-> **Course:** Design and Analysis of Algorithms (CSE112)
-> **Institution:** Alamein International University, Faculty of Computer Science & Engineering
-> **Algorithm under analysis:** Dijkstra's single-source shortest-path algorithm
-> **Application:** Cairo Transportation Optimization System
+> **CSE112 — Design & Analysis of Algorithms**
+> Alamein International University, Faculty of Computer Science & Engineering
 
-This repository contains the **theoretical-analysis** deliverable of the CSE112 project: a rigorous mathematical analysis of Dijkstra's algorithm together with a reference Java implementation, four alternative algorithms for empirical comparison, transportation-specific modifications, and a benchmark suite running on the Cairo dataset supplied with the assignment.
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Vercel-black?style=for-the-badge)](https://algo-homd11.vercel.app)
+[![Docker](https://img.shields.io/badge/🐳_Docker-Ready-2496ED?style=for-the-badge)](https://hub.docker.com)
+[![TensorFlow.js](https://img.shields.io/badge/🤖_TensorFlow.js-ML_Prediction-FF6F00?style=for-the-badge)](https://www.tensorflow.org/js)
 
-The core deliverable is the document **[`THEORETICAL_ANALYSIS.md`](THEORETICAL_ANALYSIS.md)**, which covers:
-
-1. Introduction and general applications
-2. Mathematical foundations (graph theory, optimal substructure, triangle inequality)
-3. Pseudocode (generic and binary-heap variants)
-4. Formal proof of correctness (loop invariant + greedy-choice lemma)
-5. Detailed time / space complexity for three implementations (array, binary heap, Fibonacci heap)
-6. Comparison with Bellman-Ford, Floyd-Warshall, A* and bidirectional Dijkstra
-7. Transportation-specific modifications (multi-objective weights, early termination, capacity-aware filtering, time-dependent BPR weights)
-8. Empirical performance on the Cairo network
-9. Optimization opportunities (Bidirectional, ALT, Contraction Hierarchies, Hub Labels)
-10. Conclusion and lessons learned
+An interactive web-based visualization of shortest-path algorithms on Cairo's real transportation network, featuring **ML-powered traffic congestion prediction**, **side-by-side algorithm race animation**, and a comprehensive theoretical analysis.
 
 ---
 
-## Repository layout
+## 🌐 Live Demo
+
+👉 **[algo-homd11.vercel.app](https://algo-gules.vercel.app/)**
+
+The entire app runs client-side in your browser — no backend needed.
+
+---
+
+## ✨ Features
+
+### 🏁 Algorithm Race Visualizer
+Side-by-side animated comparison of **Dijkstra's Algorithm** vs **A* Search** on the Cairo network. Watch in real-time as both algorithms explore the graph — A* typically settles **77% fewer nodes** thanks to its haversine heuristic.
+
+### 🤖 ML Traffic Prediction
+A **TensorFlow.js neural network** (3-layer dense model) trained in-browser on temporal traffic data from 28 roads × 4 time periods (112 samples). Select any road and time of day to predict congestion levels.
+
+### 📡 Interactive Network Graph
+Canvas-rendered visualization of Cairo's 25-node transportation network with real geographic coordinates, color-coded by district type (Residential, Business, Mixed, Industrial, Facility).
+
+### 📊 Benchmark Dashboard
+Empirical performance comparison of all 5 implemented algorithms with complexity analysis and bar charts.
+
+---
+
+## 🗂️ Repository Layout
 
 ```
 algo/
-├── README.md                       — this file
-├── THEORETICAL_ANALYSIS.md         — the main deliverable (analysis document)
-├── pom.xml                         — Maven build configuration
-├── build.sh                        — plain-javac build script (no internet needed)
-├── data/                           — Cairo dataset (parsed from CSE112-Project_Provided_Data.pdf)
+├── webapp/                          — Interactive web frontend (static site)
+│   ├── index.html                   — Single-page app
+│   ├── style.css                    — Dark-mode glassmorphism design
+│   ├── data.js                      — Cairo network data from CSVs
+│   ├── algorithms.js                — Dijkstra & A* (step-by-step)
+│   └── app.js                       — UI, canvas, race animation, ML model
+├── Dockerfile                       — Multi-stage Docker build (Maven + nginx)
+├── docker-compose.yml               — One-command container startup
+├── vercel.json                      — Vercel deployment config
+├── .github/workflows/deploy.yml     — GitHub Pages CI/CD
+├── README.md                        — This file
+├── THEORETICAL_ANALYSIS.md          — Full theoretical analysis document
+├── pom.xml                          — Maven build configuration
+├── build.sh                         — Plain javac build (no internet needed)
+├── data/                            — Cairo dataset (CSV files)
 │   ├── neighborhoods.csv
 │   ├── facilities.csv
 │   ├── existing_roads.csv
@@ -39,107 +62,116 @@ algo/
 │   ├── metro_lines.csv
 │   ├── bus_routes.csv
 │   └── public_transport_demand.csv
-├── src/
-│   ├── main/java/com/aiu/cse112/
-│   │   ├── Main.java                          — runnable demo
-│   │   ├── CorrectnessRunner.java             — JUnit-free test runner
-│   │   ├── algorithms/
-│   │   │   ├── ShortestPathResult.java
-│   │   │   ├── DijkstraArray.java             — O(V²) classical
-│   │   │   ├── DijkstraHeap.java              — O((V+E) log V) binary-heap
-│   │   │   ├── DijkstraTransport.java         — modified for the transportation system
-│   │   │   ├── BellmanFord.java               — comparison
-│   │   │   ├── AStar.java                     — comparison
-│   │   │   └── FloydWarshall.java             — all-pairs comparison
-│   │   ├── graph/
-│   │   │   ├── Node.java
-│   │   │   ├── Edge.java
-│   │   │   └── Graph.java
-│   │   ├── io/
-│   │   │   └── DataLoader.java
-│   │   └── benchmark/
-│   │       └── PerformanceBenchmark.java
-│   └── test/java/com/aiu/cse112/
-│       └── AlgorithmCorrectnessTest.java       — JUnit 5 test suite
+├── src/main/java/com/aiu/cse112/
+│   ├── Main.java                    — CLI demo
+│   ├── CorrectnessRunner.java       — Cross-algorithm tests
+│   ├── algorithms/
+│   │   ├── DijkstraArray.java       — O(V²) classical
+│   │   ├── DijkstraHeap.java        — O((V+E) log V) binary-heap
+│   │   ├── DijkstraTransport.java   — Transport-modified variant
+│   │   ├── AStar.java               — A* with haversine heuristic
+│   │   ├── BellmanFord.java         — Comparison baseline
+│   │   └── FloydWarshall.java       — All-pairs comparison
+│   ├── graph/
+│   │   ├── Node.java, Edge.java, Graph.java
+│   ├── io/
+│   │   └── DataLoader.java
+│   └── benchmark/
+│       └── PerformanceBenchmark.java
 └── results/
-    └── benchmark_results.md                    — generated by PerformanceBenchmark
+    └── benchmark_results.md
 ```
 
 ---
 
-## How to build and run
+## 🚀 Quick Start
 
-### Option A — plain `javac` (no internet required)
+### Option 1: Live Demo (zero setup)
+Visit **[algo-homd11.vercel.app](https://algo-homd11.vercel.app)**
+
+### Option 2: Run Locally
+```bash
+# Just open the webapp in your browser
+open webapp/index.html
+# Or use any static server:
+npx serve webapp
+```
+
+### Option 3: Docker 🐳
+```bash
+docker-compose up --build
+# App available at http://localhost:8080
+```
+
+### Option 4: Java CLI
+```bash
+# Maven
+mvn package
+java -jar target/algo-1.0.0.jar
+
+# Or plain javac (no internet)
+chmod +x build.sh && ./build.sh
+java -cp out com.aiu.cse112.Main
+```
+
+---
+
+## 🤖 ML Model Details
+
+| Property | Value |
+|---|---|
+| Framework | TensorFlow.js (runs in browser) |
+| Training Data | `traffic_flow.csv` — 28 roads × 4 time periods = 112 samples |
+| Architecture | Dense(32, ReLU) → Dense(16, ReLU) → Dense(1, sigmoid) |
+| Input Features | One-hot road encoding + normalized time period |
+| Training | 100 epochs, Adam optimizer, MSE loss |
+| Training Time | ~2 seconds in-browser |
+
+---
+
+## 🐳 Docker
+
+The project is fully containerized:
 
 ```bash
-chmod +x build.sh
-./build.sh                                      # compile
+# Build and run
+docker build -t cairo-transport .
+docker run -p 8080:80 cairo-transport
 
-java -cp out com.aiu.cse112.Main                # demo: route between several Cairo points
-java -ea -cp out com.aiu.cse112.CorrectnessRunner   # 8 cross-algorithm correctness tests
-java -cp out com.aiu.cse112.benchmark.PerformanceBenchmark   # writes results/benchmark_results.md
+# Or with docker-compose
+docker-compose up --build
 ```
 
-### Option B — Maven (also runs the JUnit tests)
-
-```bash
-mvn package                                     # produces target/algo-1.0.0.jar
-mvn test                                        # runs AlgorithmCorrectnessTest
-java -jar target/algo-1.0.0.jar                 # demo
-```
-
-Java 17 or later is required (project is configured for `--source 17 --target 17`; OpenJDK 21 was used during development).
+The Dockerfile uses a multi-stage build:
+1. **Stage 1**: Maven builds the Java project
+2. **Stage 2**: nginx:alpine serves the static web app
 
 ---
 
-## Demo output (excerpt)
+## 📈 Empirical Highlights
 
-```
-Loaded Cairo network: |V| = 25, |E| = 28
-
-Shortest path from 3 (Downtown Cairo) to 12 (Helwan):
-  Dijkstra (array)                       d=21.20 (relax=28, pops=19) : Downtown Cairo → Maadi → Helwan
-  Dijkstra (heap)                        d=21.20 (relax=28, pops=19) : Downtown Cairo → Maadi → Helwan
-  Dijkstra (transport, early exit)       d=21.20 (relax=24, pops=13) : Downtown Cairo → Maadi → Helwan
-  A* (haversine)                         d=21.20 (relax=10, pops=3)  : Downtown Cairo → Maadi → Helwan
-```
-
-Note how A* with the great-circle heuristic settles only **3 vertices** while plain Dijkstra has to settle 19 — exactly the speedup predicted in §6.3 of the analysis.
-
-## Correctness tests
-
-`CorrectnessRunner` cross-checks the implementations against each other:
-
-```
-  PASS  Array == Heap (all sources)
-  PASS  Bellman-Ford == Dijkstra
-  PASS  A* == Dijkstra (point-to-point)
-  PASS  Transport-default == Dijkstra
-  PASS  Transport early exit returns truth
-  PASS  Floyd-Warshall == Dijkstra (all-pairs)
-  PASS  Reconstructed paths are valid
-  PASS  Triangle inequality holds
-
-=========================
-Tests: 8 passed, 0 failed
-=========================
-```
-
-## Empirical highlights
-
-(Median of 1000 runs on OpenJDK 21 — full table in [`results/benchmark_results.md`](results/benchmark_results.md).)
-
-| Scenario                                 | Best algorithm                  | Why |
-| ---------------------------------------- | ------------------------------- | --- |
-| SSSP on the Cairo network                | Dijkstra (binary heap)          | O((V+E) log V) beats Bellman-Ford and the array variant |
-| Point-to-point query with target         | A* with haversine heuristic     | 6× fewer pops than full SSSP |
-| All-pairs on a small graph (V = 25)      | Floyd-Warshall                  | Constant factor wins despite Θ(V³) asymptotics |
-| All-pairs on a large graph (V ≫ 100)     | V applications of Dijkstra      | Asymptotic Θ(V·(V+E) log V) wins |
+| Scenario | Best Algorithm | Why |
+|---|---|---|
+| SSSP on Cairo network | Dijkstra (binary heap) | O((V+E) log V) beats array and Bellman-Ford |
+| Point-to-point query | A* (haversine) | 6× fewer pops than full SSSP |
+| All-pairs (V = 25) | Floyd-Warshall | Constant factor wins at small V |
+| All-pairs (V ≫ 100) | V × Dijkstra | Asymptotic advantage kicks in |
 
 ---
 
-## Authors and License
+## 🛠️ Tech Stack
 
-Submitted as the theoretical component of the CSE112 transportation optimization project at Alamein International University.
+- **Backend**: Java 17 (Maven)
+- **Frontend**: Vanilla HTML/CSS/JS + Canvas API
+- **ML**: TensorFlow.js
+- **Containerization**: Docker + nginx
+- **Deployment**: Vercel (static site)
+- **CI/CD**: GitHub Actions
 
-Source code is provided for academic / educational use as part of the CSE112 coursework.
+---
+
+## 👨‍💻 Authors
+
+CSE112 Design & Analysis of Algorithms — Alamein International University
+
+Source code provided for academic/educational use as part of CSE112 coursework.
