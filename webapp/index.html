@@ -22,6 +22,7 @@
     <li><a href="#ml-section">ML Prediction</a></li>
     <li><a href="#benchmark-section">Benchmarks</a></li>
   </ul>
+  <div class="nav-actions"></div>
 </nav>
 
 <!-- ── Hero ── -->
@@ -44,7 +45,7 @@
 <!-- ── Network Graph ── -->
 <section class="section" id="network-section">
   <div class="section-header animate-in">
-    <div class="section-tag">📡 Network Topology</div>
+    <div class="section-tag">Network Topology</div>
     <h2>Cairo Transportation Network</h2>
     <p>15 neighborhoods and 10 key facilities connected by 28 roads, with real geographic coordinates.</p>
   </div>
@@ -53,19 +54,19 @@
       <canvas id="networkCanvas"></canvas>
     </div>
     <div class="graph-legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#00d4ff"></span> Residential</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#9945ff"></span> Mixed</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#ff006e"></span> Business</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#ff8c00"></span> Industrial/Govt</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#39ff14"></span> Facility</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#6a5fc1"></span> Residential</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#8b8ba0"></span> Mixed</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#fa7faa"></span> Business</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#ffb287"></span> Industrial/Govt</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#c2ef4e"></span> Facility</div>
     </div>
   </div>
 </section>
 
 <!-- ── Algorithm Race ── -->
-<section class="section" id="race-section">
+<section class="section section-alt" id="race-section">
   <div class="section-header animate-in">
-    <div class="section-tag">🏁 Side-by-Side Comparison</div>
+    <div class="section-tag">Side-by-Side Comparison</div>
     <h2>Algorithm Race Visualizer</h2>
     <p>Watch Dijkstra and A* compete in real-time. See how A*'s heuristic drastically reduces exploration.</p>
   </div>
@@ -88,7 +89,7 @@
           <option value="20">Instant</option>
         </select>
       </div>
-      <button class="btn-race" id="raceBtn" onclick="startRace()">🏁 Start Race!</button>
+      <button class="btn-race" id="raceBtn" onclick="startRace()">🏁 Start Race</button>
     </div>
     <div class="race-grid">
       <div class="race-panel">
@@ -120,7 +121,7 @@
     </div>
     <div class="race-result" id="raceResult">
       <div class="race-winner" id="raceWinner"></div>
-      <div class="race-detail" id="raceDetail" style="color:var(--text-secondary);font-size:0.9rem"></div>
+      <div class="race-detail" id="raceDetail" style="color:var(--text-secondary);font-size:14px"></div>
     </div>
   </div>
 </section>
@@ -128,7 +129,7 @@
 <!-- ── ML Prediction ── -->
 <section class="section" id="ml-section">
   <div class="section-header animate-in">
-    <div class="section-tag">🤖 Machine Learning</div>
+    <div class="section-tag">Machine Learning</div>
     <h2>Traffic Congestion Prediction</h2>
     <p>TensorFlow.js neural network trained on temporal traffic data to forecast congestion levels.</p>
   </div>
@@ -148,8 +149,8 @@
           <div class="ml-prediction-value" id="predictionValue">—</div>
           <div class="ml-prediction-label">Predicted vehicles/hour</div>
         </div>
-        <div class="ml-prediction-box" style="border-color:rgba(153,69,255,0.15);background:rgba(153,69,255,0.05)">
-          <div class="ml-prediction-value" id="actualValue" style="font-size:1.4rem">—</div>
+        <div class="ml-prediction-box">
+          <div class="ml-prediction-value" id="actualValue" style="font-size:22px">—</div>
           <div class="ml-prediction-label">Actual (from dataset)</div>
         </div>
       </div>
@@ -164,9 +165,9 @@
 </section>
 
 <!-- ── Benchmarks ── -->
-<section class="section" id="benchmark-section">
+<section class="section section-alt" id="benchmark-section">
   <div class="section-header animate-in">
-    <div class="section-tag">📊 Performance Analysis</div>
+    <div class="section-tag">Performance Analysis</div>
     <h2>Algorithm Benchmarks</h2>
     <p>Empirical comparison of all implemented algorithms on the Cairo network (median of 1000 runs).</p>
   </div>
@@ -174,60 +175,24 @@
     <div class="card" style="padding:0;overflow:hidden">
       <table class="benchmark-table">
         <thead>
-          <tr>
-            <th>Algorithm</th>
-            <th>Complexity</th>
-            <th>Edge Relaxations</th>
-            <th>PQ Extractions</th>
-            <th>Best For</th>
-          </tr>
+          <tr><th>Algorithm</th><th>Complexity</th><th>Edge Relaxations</th><th>PQ Extractions</th><th>Best For</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Dijkstra (Array)</td>
-            <td style="font-family:'JetBrains Mono',monospace;color:var(--accent-cyan)">O(V²)</td>
-            <td>28</td>
-            <td>19</td>
-            <td>Dense graphs</td>
-          </tr>
-          <tr>
-            <td>Dijkstra (Binary Heap)</td>
-            <td style="font-family:'JetBrains Mono',monospace;color:var(--accent-cyan)">O((V+E) log V)</td>
-            <td>28</td>
-            <td>19</td>
-            <td>Sparse graphs (default)</td>
-          </tr>
-          <tr>
-            <td>A* (Haversine)</td>
-            <td style="font-family:'JetBrains Mono',monospace;color:var(--accent-magenta)">O((V+E) log V)</td>
-            <td>10</td>
-            <td>3</td>
-            <td>Point-to-point queries</td>
-          </tr>
-          <tr>
-            <td>Bellman-Ford</td>
-            <td style="font-family:'JetBrains Mono',monospace;color:var(--accent-orange)">O(V·E)</td>
-            <td>56</td>
-            <td>n/a</td>
-            <td>Negative weights</td>
-          </tr>
-          <tr>
-            <td>Floyd-Warshall</td>
-            <td style="font-family:'JetBrains Mono',monospace;color:var(--accent-purple)">O(V³)</td>
-            <td>—</td>
-            <td>—</td>
-            <td>All-pairs (small V)</td>
-          </tr>
+          <tr><td>Dijkstra (Array)</td><td><span class="complexity">O(V²)</span></td><td>28</td><td>19</td><td>Dense graphs</td></tr>
+          <tr><td>Dijkstra (Binary Heap)</td><td><span class="complexity">O((V+E) log V)</span></td><td>28</td><td>19</td><td>Sparse graphs (default)</td></tr>
+          <tr><td>A* (Haversine)</td><td><span class="complexity">O((V+E) log V)</span></td><td>10</td><td>3</td><td>Point-to-point queries</td></tr>
+          <tr><td>Bellman-Ford</td><td><span class="complexity">O(V·E)</span></td><td>56</td><td>n/a</td><td>Negative weights</td></tr>
+          <tr><td>Floyd-Warshall</td><td><span class="complexity">O(V³)</span></td><td>—</td><td>—</td><td>All-pairs (small V)</td></tr>
         </tbody>
       </table>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px">
       <div class="card">
-        <h3 style="font-size:1rem;margin-bottom:16px;color:var(--text-secondary)">Nodes Explored: Downtown → Helwan</h3>
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px">Nodes Explored: Downtown → Helwan</h3>
         <canvas id="benchChart1" height="200"></canvas>
       </div>
       <div class="card">
-        <h3 style="font-size:1rem;margin-bottom:16px;color:var(--text-secondary)">Edge Relaxations Comparison</h3>
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px">Edge Relaxations Comparison</h3>
         <canvas id="benchChart2" height="200"></canvas>
       </div>
     </div>

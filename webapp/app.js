@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════
-//  APP.JS — UI, Canvas Rendering, Race Animation, ML
+//  APP.JS — SpaceX × Sentry Hybrid Design
 // ══════════════════════════════════════════════════════
 
 // ── Canvas helpers ──
@@ -14,7 +14,6 @@ function setupCanvas(id,h){
   return {c,ctx,w,h};
 }
 
-// Project geo coords to canvas coords
 function project(node,w,h,pad){
   const xs=NODES.map(n=>n.x), ys=NODES.map(n=>n.y);
   const minX=Math.min(...xs)-.02,maxX=Math.max(...xs)+.02;
@@ -35,8 +34,12 @@ function drawGraph(ctx,w,h,opts={}){
     const b=project(NODE_MAP[e.to],w,h,pad);
     const inPath=pathSet.has(e.from+'→'+e.to)||pathSet.has(e.to+'→'+e.from);
     ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy);
-    if(inPath){ctx.strokeStyle='#39ff14';ctx.lineWidth=3.5;ctx.shadowColor='#39ff14';ctx.shadowBlur=12;}
-    else{ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1.2;ctx.shadowBlur=0;}
+    if(inPath){
+      ctx.strokeStyle='#c2ef4e';ctx.lineWidth=3.5;
+      ctx.shadowColor='#c2ef4e';ctx.shadowBlur=12;
+    } else {
+      ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.shadowBlur=0;
+    }
     ctx.stroke(); ctx.shadowBlur=0;
   });
 
@@ -46,19 +49,19 @@ function drawGraph(ctx,w,h,opts={}){
     const r=n.pop>0?(n.pop>300000?10:n.pop>100000?8:6):5;
     let col=NODE_COLORS[n.type]||'#888';
     let glow=0;
-    if(n.id===source){col='#39ff14';glow=18;}
-    else if(n.id===target){col='#ff006e';glow=18;}
-    else if(settled[n.id]){col='#ff8c00';glow=8;}
-    else if(relaxed[n.id]){col='rgba(255,140,0,0.4)';glow=4;}
+    if(n.id===source){col='#c2ef4e';glow=18;}
+    else if(n.id===target){col='#fa7faa';glow=18;}
+    else if(settled[n.id]){col='#ffb287';glow=8;}
+    else if(relaxed[n.id]){col='rgba(255,178,135,0.4)';glow=4;}
 
     ctx.beginPath(); ctx.arc(p.sx,p.sy,r,0,Math.PI*2);
     if(glow){ctx.shadowColor=col;ctx.shadowBlur=glow;}
     ctx.fillStyle=col; ctx.fill();
     ctx.shadowBlur=0;
-    ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.stroke();
 
     // Label
-    ctx.fillStyle='rgba(255,255,255,0.7)';
+    ctx.fillStyle='rgba(240,240,250,0.6)';
     ctx.font='500 9px Inter,sans-serif';
     ctx.textAlign='center';
     ctx.fillText(n.name,p.sx,p.sy-r-5);
@@ -101,12 +104,9 @@ function startRace(){
 
   const dRes=dijkstraSteps(src,tgt);
   const aRes=astarSteps(src,tgt);
-
-  // Setup canvases
   const d=setupCanvas('dijkstraCanvas',380);
   const a=setupCanvas('astarCanvas',380);
 
-  // Reset stats
   ['dijkstra','astar'].forEach(p=>{
     document.getElementById(p+'-explored').textContent='0';
     document.getElementById(p+'-relaxed').textContent='0';
@@ -114,14 +114,12 @@ function startRace(){
     document.getElementById(p+'-status').textContent='Running...';
   });
 
-  // Animate both
   const maxLen=Math.max(dRes.steps.length,aRes.steps.length);
   let i=0;
   const dSettled={},dRelaxed={},aSettled={},aRelaxed={};
   let dDone=false,aDone=false;
 
   function tick(){
-    // Dijkstra step
     if(i<dRes.steps.length){
       const s=dRes.steps[i];
       if(s.type==='settle')dSettled[s.node]=true;
@@ -134,8 +132,6 @@ function startRace(){
       document.getElementById('dijkstra-dist').textContent=dRes.totalDist.toFixed(1)+' km';
       document.getElementById('dijkstra-status').textContent='✅ Done';
     }
-
-    // A* step
     if(i<aRes.steps.length){
       const s=aRes.steps[i];
       if(s.type==='settle')aSettled[s.node]=true;
@@ -149,7 +145,6 @@ function startRace(){
       document.getElementById('astar-status').textContent='✅ Done';
     }
 
-    // Build path sets
     const dPathSet=new Set(), aPathSet=new Set();
     if(dDone) for(let j=0;j<dRes.path.length-1;j++) dPathSet.add(dRes.path[j]+'→'+dRes.path[j+1]);
     if(aDone) for(let j=0;j<aRes.path.length-1;j++) aPathSet.add(aRes.path[j]+'→'+aRes.path[j+1]);
@@ -161,7 +156,6 @@ function startRace(){
     if(i<=maxLen){
       setTimeout(tick,speed);
     } else {
-      // Show result
       raceRunning=false;
       document.getElementById('raceBtn').disabled=false;
       const el=document.getElementById('raceResult');
@@ -170,7 +164,7 @@ function startRace(){
       const winner=aE<dE?'A*':'Dijkstra';
       const savings=Math.round((1-Math.min(dE,aE)/Math.max(dE,aE))*100);
       document.getElementById('raceWinner').innerHTML=
-        `🏆 <span style="color:${winner==='A*'?'var(--accent-magenta)':'var(--accent-cyan)'}">${winner}</span> wins!`;
+        `🏆 <span style="color:var(--accent-lime)">${winner}</span> wins!`;
       document.getElementById('raceDetail').textContent=
         `A* explored ${aE} nodes vs Dijkstra's ${dE} — ${savings}% fewer explorations. Both found the same optimal path of ${dRes.totalDist.toFixed(1)} km.`;
     }
@@ -186,7 +180,6 @@ async function trainModel(){
   const status=document.getElementById('mlStatus');
   status.textContent='⏳ Training neural network on traffic data...';
 
-  // Prepare data: input=[roadIndex, timePeriod], output=flow
   const roadIds=TRAFFIC_FLOW.map(t=>t.road);
   const numRoads=roadIds.length;
   const xs=[], ys=[];
@@ -197,10 +190,9 @@ async function trainModel(){
 
   TRAFFIC_FLOW.forEach((t,ri)=>{
     periods.forEach((p,pi)=>{
-      // One-hot road + normalized time
       const input=new Array(numRoads).fill(0);
       input[ri]=1;
-      input.push(pi/3); // normalized time
+      input.push(pi/3);
       xs.push(input);
       ys.push(t[p]/mlMaxFlow);
     });
@@ -218,7 +210,7 @@ async function trainModel(){
   await mlModel.fit(xTensor,yTensor,{epochs:100,verbose:0});
   xTensor.dispose(); yTensor.dispose();
 
-  status.textContent='✅ Model trained successfully (112 samples, 3-layer neural network)';
+  status.textContent='✅ Model trained — 112 samples, 3-layer neural network';
   status.classList.add('ready');
   document.getElementById('predictBtn').disabled=false;
   drawMLChart();
@@ -250,76 +242,71 @@ function drawMLChart(selRoad,selTime,predVal){
   const vals=[t.morning,t.afternoon,t.evening,t.night];
   const maxV=Math.max(...vals)*1.2;
   const barW=w/6, gap=20, startX=(w-barW*4-gap*3)/2;
-  const colors=['#00d4ff','#9945ff','#ff006e','#ff8c00'];
+  const colors=['#6a5fc1','#8b5cf6','#fa7faa','#ffb287'];
 
   ctx.clearRect(0,0,w,h);
 
   // Title
-  ctx.fillStyle='rgba(255,255,255,0.6)';
-  ctx.font='600 12px Inter,sans-serif';
+  ctx.fillStyle='rgba(240,240,250,0.5)';
+  ctx.font='700 11px Inter,sans-serif';
+  ctx.letterSpacing='2px';
   ctx.textAlign='center';
-  ctx.fillText('Traffic Flow — Road '+t.road,w/2,25);
+  ctx.fillText('TRAFFIC FLOW — ROAD '+t.road,w/2,25);
 
-  // Bars
   vals.forEach((v,i)=>{
     const x=startX+i*(barW+gap);
     const barH=(v/maxV)*(h-90);
     const y=h-50-barH;
 
-    // Bar
     const grad=ctx.createLinearGradient(x,y,x,h-50);
     grad.addColorStop(0,colors[i]);
-    grad.addColorStop(1,colors[i]+'33');
+    grad.addColorStop(1,colors[i]+'22');
     ctx.fillStyle=grad;
     ctx.beginPath();
     ctx.roundRect(x,y,barW,barH,6);
     ctx.fill();
 
-    // Highlight selected
     if(selTime===i){
       ctx.strokeStyle=colors[i];ctx.lineWidth=2;
+      ctx.shadowColor=colors[i];ctx.shadowBlur=12;
       ctx.beginPath();ctx.roundRect(x-2,y-2,barW+4,barH+4,8);ctx.stroke();
+      ctx.shadowBlur=0;
     }
 
-    // Value
-    ctx.fillStyle='rgba(255,255,255,0.8)';
+    ctx.fillStyle='rgba(240,240,250,0.8)';
     ctx.font='600 11px JetBrains Mono,monospace';
     ctx.textAlign='center';
     ctx.fillText(v.toLocaleString(),x+barW/2,y-8);
 
-    // Label
-    ctx.fillStyle='rgba(255,255,255,0.4)';
+    ctx.fillStyle='rgba(240,240,250,0.35)';
     ctx.font='500 9px Inter,sans-serif';
     ctx.fillText(TIME_LABELS[i],x+barW/2,h-32);
   });
 
-  // Prediction marker
   if(predVal!=null&&selTime!=null){
     const x=startX+selTime*(barW+gap)+barW/2;
     const predH=(predVal/maxV)*(h-90);
     const py=h-50-predH;
     ctx.beginPath();ctx.arc(x,py,5,0,Math.PI*2);
-    ctx.fillStyle='#39ff14';ctx.fill();
-    ctx.shadowColor='#39ff14';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
-    ctx.fillStyle='#39ff14';ctx.font='bold 10px JetBrains Mono,monospace';
+    ctx.fillStyle='#c2ef4e';ctx.fill();
+    ctx.shadowColor='#c2ef4e';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+    ctx.fillStyle='#c2ef4e';ctx.font='bold 10px JetBrains Mono,monospace';
     ctx.fillText('ML: '+predVal.toLocaleString(),x,py-12);
   }
 }
 
 // ── Benchmark Charts ──
 function drawBenchCharts(){
-  // Chart 1: Nodes explored
   const {ctx:c1,w:w1,h:h1}=setupCanvas('benchChart1',200);
-  const data1=[{label:'Dijkstra',val:19,col:'#00d4ff'},{label:'A*',val:3,col:'#ff006e'},{label:'Bellman-Ford',val:25,col:'#ff8c00'}];
-  drawBarChart(c1,w1,h1,data1,'Nodes Settled');
+  const data1=[{label:'Dijkstra',val:19,col:'#6a5fc1'},{label:'A*',val:3,col:'#c2ef4e'},{label:'Bellman-Ford',val:25,col:'#ffb287'}];
+  drawBarChart(c1,w1,h1,data1);
 
-  // Chart 2: Edge relaxations
   const {ctx:c2,w:w2,h:h2}=setupCanvas('benchChart2',200);
-  const data2=[{label:'Dijkstra',val:28,col:'#00d4ff'},{label:'A*',val:10,col:'#ff006e'},{label:'Bellman-Ford',val:56,col:'#ff8c00'}];
-  drawBarChart(c2,w2,h2,data2,'Edge Relaxations');
+  const data2=[{label:'Dijkstra',val:28,col:'#6a5fc1'},{label:'A*',val:10,col:'#c2ef4e'},{label:'Bellman-Ford',val:56,col:'#ffb287'}];
+  drawBarChart(c2,w2,h2,data2);
 }
 
-function drawBarChart(ctx,w,h,data,title){
+function drawBarChart(ctx,w,h,data){
   ctx.clearRect(0,0,w,h);
   const maxV=Math.max(...data.map(d=>d.val))*1.3;
   const barW=w/(data.length*2+1);
@@ -328,12 +315,12 @@ function drawBarChart(ctx,w,h,data,title){
     const barH=(d.val/maxV)*(h-60);
     const y=h-30-barH;
     const grad=ctx.createLinearGradient(x,y,x,h-30);
-    grad.addColorStop(0,d.col);grad.addColorStop(1,d.col+'33');
+    grad.addColorStop(0,d.col);grad.addColorStop(1,d.col+'22');
     ctx.fillStyle=grad;
     ctx.beginPath();ctx.roundRect(x,y,barW,barH,4);ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.8)';ctx.font='bold 12px JetBrains Mono,monospace';
+    ctx.fillStyle='rgba(240,240,250,0.8)';ctx.font='bold 12px JetBrains Mono,monospace';
     ctx.textAlign='center';ctx.fillText(d.val,x+barW/2,y-6);
-    ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='500 9px Inter,sans-serif';
+    ctx.fillStyle='rgba(240,240,250,0.35)';ctx.font='500 9px Inter,sans-serif';
     ctx.fillText(d.label,x+barW/2,h-12);
   });
 }

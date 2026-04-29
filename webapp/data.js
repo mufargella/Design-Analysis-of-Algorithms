@@ -90,7 +90,7 @@ const TRAFFIC_FLOW=[
 ];
 
 const TIME_LABELS=["Morning Peak","Afternoon","Evening Peak","Night"];
-const NODE_COLORS={Residential:"#00d4ff",Mixed:"#9945ff",Business:"#ff006e",Industrial:"#ff8c00",Government:"#ff8c00",Airport:"#39ff14","Transit Hub":"#39ff14",Education:"#39ff14",Tourism:"#39ff14",Sports:"#39ff14",Commercial:"#39ff14",Medical:"#39ff14"};
+const NODE_COLORS={Residential:"#6a5fc1",Mixed:"#8b8ba0",Business:"#fa7faa",Industrial:"#ffb287",Government:"#ffb287",Airport:"#c2ef4e","Transit Hub":"#c2ef4e",Education:"#c2ef4e",Tourism:"#c2ef4e",Sports:"#c2ef4e",Commercial:"#c2ef4e",Medical:"#c2ef4e"};
 
 function buildAdj(){
   const adj={};
