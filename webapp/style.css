@@ -243,10 +243,28 @@ body::after {
 }
 .control-group select,.control-group input {
   padding:12px 16px;border-radius:var(--radius-sm);
-  background:var(--bg-glass);border:1px solid var(--border-ghost);
-  color:var(--text-primary);font-family:inherit;font-size:14px;
+  background-color:#1f1633;border:1px solid var(--border-purple);
+  color:#f0f0fa;font-family:inherit;font-size:14px;font-weight:500;
   min-width:180px;transition:var(--transition);
-  backdrop-filter:blur(12px);
+}
+.control-group select {
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;
+  padding-right:40px;cursor:pointer;
+  background-color:#1f1633;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a8a3b8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+}
+.control-group select option {
+  background-color:#1f1633;
+  color:#f0f0fa;
+  font-weight:500;
+  padding:12px 16px;
+}
+.control-group select option:hover {
+  background-color:#6a5fc1;
+}
+.control-group select option:checked {
+  background-color:#6a5fc1;color:#ffffff;font-weight:700;
 }
 .control-group select:focus,.control-group input:focus {
   outline:none;border-color:var(--accent-purple);box-shadow:0 0 0 3px var(--accent-purple-dim);
